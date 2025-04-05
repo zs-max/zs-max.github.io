@@ -1,16 +1,14 @@
 import { defineConfig } from 'vitepress'
+import { nav } from './relaConf';
 
 // https://vitepress.dev/reference/site-config
 export default defineConfig({
-  title: "lek-blog",
+  title: "Lek-Blog",
   description: "A blog that records the journey of growth along the way",
   themeConfig: {
     // https://vitepress.dev/reference/default-theme-config
-    nav: [
-      { text: 'Home', link: '/' },
-      { text: 'Examples', link: '/markdown-examples' }
-    ],
-
+    logo:'./avatar.png',
+    nav:nav,
     sidebar: [
       {
         text: 'Examples',
@@ -20,7 +18,6 @@ export default defineConfig({
         ]
       }
     ],
-
     socialLinks: [
       { icon: 'github', link: 'https://github.com/vuejs/vitepress' }
     ]
