@@ -23,6 +23,15 @@ export const nav: DefaultTheme.NavItem[] = [
       ]
     },
     {
+      text:"前端开发",
+      items:[
+        {
+         text:"数据结构与算法",
+         link:"/column/Algorithm"
+        }
+      ]
+    },
+    {
      
       text: '关于我',
       items: [

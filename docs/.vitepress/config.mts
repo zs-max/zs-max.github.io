@@ -1,5 +1,5 @@
 import { defineConfig } from 'vitepress'
-import { nav } from './relaConf';
+import { nav,sidebar } from './relaConf';
 
 // https://vitepress.dev/reference/site-config
 export default defineConfig({
@@ -9,17 +9,13 @@ export default defineConfig({
     // https://vitepress.dev/reference/default-theme-config
     logo:'./avatar.png',
     nav:nav,
-    sidebar: [
-      {
-        text: 'Examples',
-        items: [
-          { text: 'Markdown Examples', link: '/markdown-examples' },
-          { text: 'Runtime API Examples', link: '/api-examples' }
-        ]
-      }
-    ],
+    sidebar: sidebar,
     socialLinks: [
       { icon: 'github', link: 'https://github.com/vuejs/vitepress' }
-    ]
+    ],
+    search:{
+      provider:"local"
+    },
+    i18nRouting: true
   }
 })
