@@ -5,7 +5,7 @@ layout: home
 home: true
 
 # 官方文档相关配置：https://vitepress.dev/reference/default-theme-home-page
-title: 周一的博客
+title: 周一的博客1
 titleTemplate: Hi，终于等到你
 editLink: true
 lastUpdated: true
