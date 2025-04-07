@@ -3,7 +3,7 @@ import { nav,sidebar } from './relaConf';
 
 // https://vitepress.dev/reference/site-config
 export default defineConfig({
-  base:"/lek/",
+  base:"/",
   title: "lek-blog",
   description: "A blog that records the journey of growth along the way",
   themeConfig: {
