@@ -10,6 +10,7 @@ export default defineConfig({
     theme: 'material-theme-palenight',
     lineNumbers: true,
   },
+  head: [['link', { rel: 'icon', href: './avatar.png' }]],
   themeConfig: {
     // https://vitepress.dev/reference/default-theme-config
     logo:'./avatar.png',
