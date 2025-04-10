@@ -2,6 +2,7 @@
 # 提供三种布局，doc、page和home
 # 官方文档相关配置：https://vitepress.dev/reference/default-theme-layout
 layout: home
+pageClass: m-home-layout
 home: true
 
 # 官方文档相关配置：https://vitepress.dev/reference/default-theme-home-page
@@ -23,7 +24,7 @@ hero:
     actions:
     - theme: brand
       text: 进入主页
-      link: /column/views/guide
+      link: /column/Algorithm/
     - theme: alt
       text: 个人成长
       link: /column/Growing/
@@ -45,7 +46,7 @@ features:
 
 <!-- 自定义组件 -->
 <script setup>
-import home from './.vitepress/components/home.vue';
+// import home from './.vitepress/components/home.vue';
 </script>
 
 <home />

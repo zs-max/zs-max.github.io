@@ -1,1 +1,7 @@
-123
+```ts
+const aaa = () =>{
+    console.log('hello')
+}
+
+
+```

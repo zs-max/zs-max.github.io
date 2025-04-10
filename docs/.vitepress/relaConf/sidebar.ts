@@ -34,5 +34,23 @@ export const sidebar: DefaultTheme.Sidebar = {
         }
       ]
     }
+  ],
+  '/column/interviewQuestion/':[
+    {
+   
+      text: '前端基础',
+      items: [
+        {
+   
+          text: '栈-深拷贝和浅拷贝',
+          link: '/column/interviewQuestion/001_Stack'
+        },
+        {
+   
+          text: '队列-事件循环',
+          link: '/column/interviewQuestion/002_Queue'
+        }
+      ]
+    },
   ]
 };

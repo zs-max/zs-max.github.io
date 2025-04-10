@@ -1,0 +1,19 @@
+/*图片转圈圈效果*/
+.m-home-layout {
+    .image-src:hover {
+        transform: translate(-50%, -50%) rotate(666turn);
+        transition: transform 59s 1s cubic-bezier(0.3, 0, 0.8, 1);
+    }
+}
+
+/* 首页样式修改 */
+.VPHero {
+    .image-bg {  //修改图片样式
+        opacity: 0.8;
+        transition: opacity 1s ease;
+    }
+    .text { //修改文案样式
+        line-height: 64px;
+        font-size: 42px;
+    }
+}
