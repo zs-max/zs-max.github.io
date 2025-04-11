@@ -18,7 +18,6 @@ const list = [1, 2, 3, 4, 5, 6, 7, 8, 9];
 }
 
 .home-item {
-
     vertical-align: middle;
     margin: 4px 4px 10px;
     padding: 4px 8px;
