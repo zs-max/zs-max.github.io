@@ -8,9 +8,13 @@ export const nav: DefaultTheme.NavItem[] = [
     },
     {
       text:"智能导航",
+      link:"/column/navigation"
+    },
+    {
+      text:"前端开发",
       items:[
         {
-         text:"前端导航",
+         text:"面试题",
          link:"/column/Algorithm"
         },
         {
@@ -35,23 +39,6 @@ export const nav: DefaultTheme.NavItem[] = [
      
           text: '所思·所想',
           link: '/column/Growing/' // 表示docs/column/Growing/index.md
-        }
-      ]
-    },
-    {
-      text:"前端开发",
-      items:[
-        {
-         text:"面试题",
-         link:"/column/Algorithm"
-        },
-        {
-          text:"数据结构与算法",
-          link:"/column/Algorithm"
-         },
-          {
-         text:"数据结构与算法",
-         link:"/column/Algorithm"
         }
       ]
     },

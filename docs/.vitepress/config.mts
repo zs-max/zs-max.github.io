@@ -31,7 +31,7 @@ export default defineConfig({
       copyright:"Copyright © 2025-present Lek"
     },
     socialLinks: [
-      { icon: 'github', link: 'https://github.com/vuejs/vitepress' }
+      { icon: 'github', link: 'https://github.com/vuejs/vitepress'}
     ],
     search:{
       provider:"local"
