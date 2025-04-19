@@ -8,22 +8,26 @@ export const nav: DefaultTheme.NavItem[] = [
     },
     {
       text:"智能导航",
-      link:"/column/navigation"
+      link:"/views/navigation"
     },
     {
       text:"前端开发",
       items:[
         {
          text:"面试题",
-         link:"/column/Algorithm"
+         link:"/views/frontEnd/interviewQuestion"
         },
         {
-          text:"数据结构与算法",
-          link:"/column/Algorithm"
-         },
-          {
-         text:"数据结构与算法",
-         link:"/column/Algorithm"
+          text:"组件库",
+          link:"/views/frontEnd/components"
+        },
+        {
+          text:"前端基建",
+          link:"/views/frontEnd/baseBuild"
+        },
+        {
+          text:"项目模板",
+          link:"/views/frontEnd/proTemplate"
         }
       ]
     },
@@ -32,13 +36,18 @@ export const nav: DefaultTheme.NavItem[] = [
       items: [
         {
      
-          text: '大江南北游记',
-          link: '/column/Travel/' // 表示docs/column/Travel/index.md
+          text: '旅行',
+          link: '/views/life/travel'
         },
         {
      
-          text: '所思·所想',
-          link: '/column/Growing/' // 表示docs/column/Growing/index.md
+          text: '成长',
+          link: '/views/life/growing'
+        },
+        {
+     
+          text: '其他',
+          link: '/views/life/other'
         }
       ]
     },
