@@ -28,6 +28,10 @@ export const nav: DefaultTheme.NavItem[] = [
         {
           text:"项目模板",
           link:"/views/frontEnd/proTemplate"
+        },
+        {
+          text:"dy知识点",
+          link:"/views/frontEnd/dyQuestion"
         }
       ]
     },

@@ -45,7 +45,6 @@ export const sidebar: DefaultTheme.Sidebar = {
       text: '前端基础',
       items: [
         {
-   
           text: '栈-深拷贝和浅拷贝',
           link: '/views/interviewQuestion/001_Stack'
         },
@@ -53,6 +52,35 @@ export const sidebar: DefaultTheme.Sidebar = {
    
           text: '队列-事件循环',
           link: '/views/interviewQuestion/002_Queue'
+        }
+      ]
+    },
+  ],
+  '/views/frontEnd/dyQuestion/':[
+    {
+      text: '前端基础',
+      items: [
+        {
+          text: '栈-深拷贝和浅拷贝',
+          link: '/views/frontEnd/dyQuestion/baseQuestion/001_Stack'
+        }
+      ]
+    },
+    {
+      text: 'javascript',
+      items: [
+        {
+          text: 'js实现函数重载',
+          link: '/views/frontEnd/dyQuestion/javascript/reloadFun'
+        }
+      ]
+    },
+    {
+      text: '前端基建',
+      items: [
+        {
+          text: '代理实现单例模式',
+          link: '/views/frontEnd/dyQuestion/basebuild/singleton'
         }
       ]
     },
