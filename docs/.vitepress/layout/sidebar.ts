@@ -45,13 +45,18 @@ export const sidebar: DefaultTheme.Sidebar = {
       text: '前端基础',
       items: [
         {
-          text: '栈-深拷贝和浅拷贝',
-          link: '/views/interviewQuestion/001_Stack'
+          text: 'html',
+          link: '/views/frontEnd/interviewQuestion/html'
         },
         {
    
-          text: '队列-事件循环',
-          link: '/views/interviewQuestion/002_Queue'
+          text: 'css',
+          link: '/views/frontEnd/interviewQuestion/css'
+        },
+        {
+   
+          text: 'javascript',
+          link: '/views/frontEnd/interviewQuestion/javascript'
         }
       ]
     },
