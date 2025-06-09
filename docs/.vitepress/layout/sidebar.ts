@@ -60,6 +60,16 @@ export const sidebar: DefaultTheme.Sidebar = {
         }
       ]
     },
+    {
+      text:"场景题目",
+      link: '/views/frontEnd/interviewQuestion/senceQuestion/index',
+      items:[
+         {
+          text: 'html',
+          link: '/views/frontEnd/interviewQuestion/senceQuestion/html'
+        }
+      ]
+    }
   ],
   '/views/frontEnd/dyQuestion/':[
     {
