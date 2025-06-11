@@ -46,17 +46,22 @@ export const sidebar: DefaultTheme.Sidebar = {
       items: [
         {
           text: 'html',
-          link: '/views/frontEnd/interviewQuestion/html'
+          link: '/views/frontEnd/interviewQuestion/base/html'
         },
         {
    
           text: 'css',
-          link: '/views/frontEnd/interviewQuestion/css'
+          link: '/views/frontEnd/interviewQuestion/base/css'
         },
         {
    
           text: 'javascript',
-          link: '/views/frontEnd/interviewQuestion/javascript'
+          link: '/views/frontEnd/interviewQuestion/base/javascript'
+        },
+        {
+   
+          text: 'typescript',
+          link: '/views/frontEnd/interviewQuestion/base/typescript'
         }
       ]
     },

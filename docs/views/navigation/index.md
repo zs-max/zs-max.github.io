@@ -40,6 +40,11 @@ const data = reactive([
           desc: 'JSON 在线解析及格式化验证',
           link: 'https://www.json.cn',
         },
+        {
+          title: 'ts在线类型测试',
+          desc: 'ts在线编译类型',
+          link: 'https://www.tslang.cn/play/index.html',
+        },
       ],
     }
 ])
