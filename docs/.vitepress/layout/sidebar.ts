@@ -99,5 +99,20 @@ export const sidebar: DefaultTheme.Sidebar = {
         }
       ]
     },
+  ],
+  '/views/frontEnd/baseBuild/': [
+    {
+      text: "前端基建",
+      link: "/views/frontEnd/baseBuild/index",
+      items: [
+        {
+          text: "脚手架",
+          link: "/views/frontEnd/baseBuild/cli/index"
+        }, {
+          text: "组件库",
+          link: "/views/frontEnd/baseBuild/components/index"
+        }
+      ]
+    }
   ]
 };
