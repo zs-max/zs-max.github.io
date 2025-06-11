@@ -66,6 +66,15 @@ export const sidebar: DefaultTheme.Sidebar = {
       ]
     },
     {
+      text:"框架相关",
+      items:[
+         {
+          text: 'vue',
+          link: '/views/frontEnd/interviewQuestion/vue/index'
+        }
+      ]
+    },
+    {
       text:"场景题目",
       link: '/views/frontEnd/interviewQuestion/senceQuestion/index',
       items:[
@@ -117,6 +126,22 @@ export const sidebar: DefaultTheme.Sidebar = {
           text: "组件库",
           link: "/views/frontEnd/baseBuild/components/index"
         }
+      ]
+    }
+  ],
+  '/views/frontEnd/tools':[
+    {
+      text:"前端工具",
+      link:'/views/frontEnd/tools/index',
+      items:[
+        {
+          text: "jenkins",
+          link: "/views/frontEnd/tools/jenkins/index"
+        },
+         {
+          text: "宝塔",
+          link: "/views/frontEnd/tools/baota/index"
+        },
       ]
     }
   ]

@@ -32,6 +32,10 @@ export const nav: DefaultTheme.NavItem[] = [
         {
           text:"dy知识点",
           link:"/views/frontEnd/dyQuestion"
+        },
+         {
+          text:"工具",
+          link:"/views/frontEnd/tools"
         }
       ]
     },
