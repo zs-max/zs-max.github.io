@@ -36,6 +36,9 @@ export const nav: DefaultTheme.NavItem[] = [
          {
           text:"工具",
           link:"/views/frontEnd/tools"
+        },{
+          text:"markdown基本使用",
+          link:"/views/markdown"
         }
       ]
     },

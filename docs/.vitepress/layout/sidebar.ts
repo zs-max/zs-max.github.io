@@ -144,5 +144,8 @@ export const sidebar: DefaultTheme.Sidebar = {
         },
       ]
     }
+  ],
+  '/views/markdown':[
+    {text:"markdown基本使用",link:'/views/markdown/index'}
   ]
 };

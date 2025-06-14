@@ -9,6 +9,10 @@ export default defineConfig({
   markdown:{
     theme: 'material-theme-palenight',
     lineNumbers: true,
+    image:{
+      // 设置为 true 可为所有图片启用懒加载
+      lazyLoading:true
+    }
   },
   head: [['link', { rel: 'icon', href: './avatar.png' }]],
   themeConfig: {
