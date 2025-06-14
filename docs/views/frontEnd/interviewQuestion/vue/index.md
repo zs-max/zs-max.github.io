@@ -181,3 +181,655 @@ v-if 和 v-for 不能直接一起使用的原因，主要是因为它们在 解�
 </div>
 ```
 :::
+
+## computed和watch的区别？
+computed用于计算基于响应式数据的值，并缓存结果:
+```js
+<template>
+  <div>
+    <p>原始值：{{ count }}</p>
+    <p>计算后的数值：{{ doubledCount }}</p>
+  </div>
+</template>
+
+<script setup>
+import { ref, computed } from 'vue'
+
+const count = ref(2)
+
+// 计算属性
+const doubledCount = computed(() => count.value * 2)
+```
+watch用于监听数据变化并执行副作用操作
+```js
+<template>
+  <div>
+    <p>原始数值：{{ count }}</p>
+    <button @click="count++">增加数值</button>
+  </div>
+</template>
+
+<script setup>
+import { ref, watch } from 'vue'
+
+const count = ref(0)
+
+// 监听器
+watch(count, (newVal, oldVal) => {
+  console.log(`数值从 ${oldVal} 变为 ${newVal}`)
+})
+</script>
+```
+
+## watch 和 watchEffect 的区别
+watch 和 watchEffect 都是 Vue 3 中用于响应式数据变化时执行副作用的 API，它们的使用场景和工作机制存在区别：
+:::info
+- 依赖追踪方式
+
+``watch`` ：需要显式声明依赖，监听指定的数据源；可以监听多个数据源或进行深度监听。
+```js
+import { watch, reactive } from 'vue'
+const state = reactive({
+  count: 0,
+})
+watch(
+  () => state.count, // 显式声明监听的依赖
+  (newCount, oldCount) => {
+    console.log(`新值 ${newCount} 老值 ${oldCount}`)
+  }
+)
+```
+``watchEffect`` ：会自动追踪 作用域内所有的响应式依赖，不需要显式声明依赖
+```js
+import { watchEffect, reactive } from 'vue'
+const state = reactive({
+  count: 0,
+})
+watchEffect(() => {
+  console.log(`Count 变化了: ${state.count}`) // 自动追踪 `state.count`
+})
+```
+
+- 执行时机
+watch ：在监听的响应式数据变化后立即执行。
+watchEffect ：在 组件挂载时 执行一次副作用，并在 依赖发生变化时 再次执行。
+- 适用场景
+watch ：适用于 监听特定数据 变化并执行副作用的场景，如 API 请求、保存操作等。适合需要 访问新值和旧值 进行比较的场景。
+watchEffect ：不需要访问旧值，适用于 自动追踪多个响应式依赖 的副作用，如渲染、自动保存等。
+:::
+
+## 🔥Vue3 ref 和 reactive 如何选择？
+ref 和 reactive 都是 Vue 3 中用来创建响应式数据的 API，他们的区别及使用场景如下。
+- reactive原理： 通过 Proxy 对对象或数组的每个属性进行深度代理，实现响应式。
+:::warning
+这种设计使得 reactive 能自动追踪所有嵌套属性的变化，但由于 Proxy 无法直接处理基本数据类型（如 number 、 string 、 boolean ），因此， reactive 不适用于基本数据类型
+:::
+- ref原理：ref的实现： 为了实现基本数据类型的响应式，Vue 设计了 ref 。 ref 会将基本数据类型封装为一个包含 value 属性的对象，通过 getter 和 setter 实现响应式依赖追踪和更新。当访问或修改 ref.value 时，Vue 内部会触发依赖更新。此外，对于复杂数据类型（如对象或数组）， ref 的内部实现会直接调用 reactive ，将复杂数据类型变为响应式。
+
+:::info
+Vue官方建议使用 ref() 作为声明响应式状态的主要，因为 reactive 存在以下局限性：
+- 有限的值类型：它只能用于对象类型 (对象、数组和如 Map、Set 这样的集合类型)。它不能持有如 string、number 或 boolean 这样的原始类型。 
+- 不能替换整个对象：由于 Vue 的响应式跟踪是通过属性访问实现的，因此我们必须始终保持对响应式对象的相同引用。这意味着我们不能轻易地“替换”响应式对象，因为这样的话与第一个引用的响应性连接将丢失
+```js
+let state = reactive({
+  count: 0,
+})
+
+// 上面的 ({ count: 0 }) 引用将不再被追踪
+// (响应性连接已丢失！)
+state = reactive({
+  count: 1,
+})
+```
+- 对解构操作不友好：当我们将响应式对象的原始类型属性解构为本地变量时，或者将该属性传递给函数时，我们将丢失响应性连接
+```js
+const state = reactive({
+  count: 0,
+})
+// 当解构时，count 已经与 state.count 断开连接
+let { count } = state
+// 不会影响原始的 state
+count++
+
+// 该函数接收到的是一个普通的数字
+// 并且无法追踪 state.count 的变化
+// 我们必须传入整个对象以保持响应性
+callSomeFunction(state.count)
+```
+:::
+
+## 什么是动态组件？如何使用它？
+动态组件是 Vue 提供的一种机制，允许我们根据条件动态切换渲染的组件，而不需要手动修改模板。 在Vue中，我们可以通过 ``<component>`` 标签的 :is 属性指定需要渲染的组件：
+```js
+<template>
+  <div>
+    <!-- 动态渲染组件 -->
+    <component :is="currentComponent"></component>
+
+    <!-- 控制组件切换 -->
+    <button @click="currentComponent = 'ComponentA'">显示组件A</button>
+    <button @click="currentComponent = 'ComponentB'">显示组件B</button>
+  </div>
+</template>
+
+<script setup>
+import { ref } from 'vue'
+import ComponentA from './ComponentA.vue'
+import ComponentB from './ComponentB.vue'
+
+// 当前显示的组件
+const currentComponent = ref('ComponentA')
+</script>
+```
+``<component>`` 标签的 :is 属性值可以是：
+- 被注册的组件名
+- 导入的组件对象
+- 一般的 HTML 元素
+当使用 ``<component :is="...">`` 来在多个组件间作切换时，被切换掉的组件会被卸载。如果需要保留动态组件状态，使用 ``<KeepAlive>`` 组件即可。
+
+## 什么是 slot ，有什么应用场景？
+slot 是 Vue 中的一种用于 组件内容分发 的机制。它允许父组件向子组件插入内容，从而使组件更加灵活和可复用。
+
+在Vue中，插槽的使用方式可以分为四种：默认插槽、具名插槽、条件插槽和作用域插槽。
+- 默认插槽
+```js
+<template>
+  <div>
+    <p>我是子组件的标题</p>
+    <slot></slot>
+  </div>
+</template>
+```
+- 具名插槽
+```js
+<template>
+  <slot name="header">默认标题</slot>
+  <slot>默认内容</slot>
+  <slot name="footer">默认页脚</slot>
+</template>
+```
+- 条件插槽
+```js
+<template>
+  <div class="card">
+    <div v-if="$slots.header" class="card-header">
+      <slot name="header" />
+    </div>
+
+    <div v-if="$slots.default" class="card-content">
+      <slot />
+    </div>
+
+    <div v-if="$slots.footer" class="card-footer">
+      <slot name="footer" />
+    </div>
+  </div>
+</template>
+```
+- 作用域插槽:作用域插槽可以让子组件在渲染时将一部分数据提供给插槽，从而实现父组件的插槽访问到子组件的状态。
+```js
+<template>
+  <ul>
+    <!-- 定义作用域插槽，并将 items 数据传递给父组件 -->
+    <slot :items="items"></slot>
+  </ul>
+</template>
+```
+:::warning
+应用场景
+
+💡灵活的组件内容插入： 插槽允许我我们将内容插入组件中，而无需修改子组件内部逻辑，极大提高了组件的灵活性。
+
+💡构建通用组件： 比如开发卡片、模态框、列表等组件，使用插槽可以轻松实现内容的自定义。模态框组件可通过插槽自定义标题、正文和按钮。
+
+💡减少重复代码： 通过插槽，将公共逻辑封装到子组件中，而在父组件中只需插入变化的内容。
+:::
+
+## Vue 项目可做哪些性能优化？
+```js
+在 Vue 项目中，我们可以利用 Vue 特有的功能和机制实现性能优化。
+1️⃣ 模板和指令优化
+合理的使用 v-if 和 v-show 指令，避免不必要的渲染。
+使用 v-for 时，尽量提供唯一的 key ，避免重复渲染。
+使用 v-once 指令，只渲染一次，避免不必要的计算。
+使用 v-memo 指令，对使用v-for生成的列表进行渲染优化。(vue3.2新增)
+2️⃣ 组件优化
+合理使用 keep-alive 组件，缓存组件实例，避免重复渲染。
+使用异步组件加载，减少首屏加载时间。
+const AsyncComponent = defineAsyncComponent(() => import('./MyComponent.vue'))
+配合 Vue Router 使用路由懒加载，实现路由页面按需加载。
+合理划分组件，提升复用性和渲染性能。
+3️⃣ 响应式优化
+使用 Object.freeze 冻结对象，避免不必要的响应式。
+使用 stop 停止 不必要的watchEffect副作用执行，以减少性能消耗。
+watch的优化:
+ 避免滥用深度监听，降低性能开销。
+💡 对于频繁触发的响应式数据变化，可以通过防抖和节流优化监听逻辑。
+import { debounce } from 'lodash'
+watch(
+  () => searchQuery,
+  debounce((newQuery) => {
+    fetchSearchResults(newQuery)
+  }, 300)
+)
+可以通过返回函数只监听具体的依赖，减少不必要的触发。
+watch([() => user.name, () => user.age], ([newName, newAge]) => {
+  //...
+})
+
+当监听器在某些条件下不再需要时，可以通过返回的 stop 方法手动停止监听，以节省资源
+const stop = watch(
+  () => data.value,
+  (newValue) => {
+    if (newValue === 'done') {
+      stop() // 停止监听
+    }
+  }
+)
+当多个监听器的回调逻辑类似时，可以合并监听
+watch([() => user.name, () => user.age], ([newName, newAge]) => {
+  //...
+})
+
+```
+
+## 什么是 nextTick 如何应用它
+在 Vue.js 中， nextTick 是一个核心工具方法，用于处理 DOM 更新时机问题。它的核心作用是：在下次 DOM 更新循环结束后执行回调，确保我们能操作到最新的 DOM 状态。 它的使用场景如下：
+```js
+数据变化后操作DOM:
+<script setup>
+async function increment() {
+  count.value++
+  // DOM 还未更新
+  console.log(document.getElementById('counter').textContent) // 0
+  await nextTick()
+  // DOM 此时已经更新
+  console.log(document.getElementById('counter').textContent) // 1
+}
+</script>
+
+<template>
+  <button id="counter" @click="increment">{{ count }}</button>
+</template>
+在生命周期钩子中操作DOM:
+<script setup>
+import { ref, onMounted, nextTick } from 'vue'
+// 创建 DOM 引用
+const element = ref(null)
+
+onMounted(() => {
+  // 直接访问可能未渲染完成
+  console.log(element.value.offsetHeight) // 0 或未定义
+  // 使用 nextTick 确保 DOM 已渲染
+  nextTick(() => {
+    console.log(element.value.offsetHeight) // 实际高度
+  })
+})
+</script>
+```
+:::warning
+注意，在vue2中和vue3的选项式 API中，我们使用this.$nextTick(callback)的方式调用。
+this.$nextTick(() => {
+  console.log(this.$refs.text.innerText) // "更新后的文本"
+})
+:::
+
+## 使用 Vue3 Composable 组合式函数，实现 useCount
+:::tip
+在 Vue 应用的概念中，“组合式函数”(Composables) 是一个利用 Vue 的组合式 API 来封装和复用有状态逻辑的函数。它和自定义 React hooks 非常相似。
+:::
+使用组合式函数实现如下需求：useCount 是一个计数逻辑管理的组合式函数，它返回一个 count 变量和增加、减少、重置count的方法。
+```js
+<script setup>
+import { ref } from 'vue'
+
+// 实现 useCount 组合式函数
+function useCount() {
+  const count = ref(0)
+  const increment = () => {
+    count.value++
+  }
+  const decrement = () => {
+    count.value--
+  }
+  const reset = () => {
+    count.value = 0
+  }
+  return {
+    count,
+    increment,
+    decrement,
+    reset,
+  }
+}
+
+// 使用 useCount 组合式函数
+const { count, increment, decrement, reset } = useCount()
+</script>
+```
+
+## 使用 Vue3 Composable 组合式函数，实现 useRequest
+const { loading, data, error } = useRequest(url) // 可只考虑 get 请求
+```js
+import { ref, computed } from 'vue';
+import axios from 'axios';
+
+// 实现 useRequest 组合式函数
+function useRequest(url) {
+  const loading = ref(false); // 请求状态
+  const data = ref(null); // 响应数据
+  const error = ref(null); // 错误信息
+  const fetchData = async () => {
+    loading.value = true;
+    error.value = null;
+    try {
+      const response = await axios.get(url); /
+      data.value = response.data;
+    } catch (err) {
+      error.value = err.message || '请求失败'; /
+    } finally {
+      loading.value = false;
+    }
+  };
+  // 自动触发请求
+  fetchData();
+  return {
+    loading,
+    data,
+    error,
+  };
+}
+export default useRequest;
+```
+
+## 自定义组件如何实现 v-model
+v-model 可以在组件上使用以实现双向绑定。
+:::details vue2
+在vue2中，自定义组件使用 v-model ，需要在组件内部定义 value prop，然后通过 this.$emit('input', newValue) 触发更新即可
+```js
+<!-- CustomInput.vue -->
+<template>
+  <input :value="value" @input="$emit('input', $event.target.value)" />
+</template>
+
+<script>
+export default {
+  props: ['value'],
+}
+</script>
+```
+:::
+
+:::details vue3
+与vue2类似，vue3自定义组件使用 v-model ，需要在组件内部定义 modelValue prop，然后通过 emit('update:modelValue', newValue) 触发更新
+```js
+<!-- CustomInput.vue -->
+<template>
+  <input :value="modelValue" @input="$emit('update:modelValue', $event.target.value)" />
+</template>
+
+<script setup>
+defineProps(['modelValue'])
+defineEmits(['update:modelValue'])
+</script>
+使用方式：
+<CustomInput v-model="searchText" />
+```
+👉注意，从 Vue 3.4 开始，官方推荐的实现方式是使用 defineModel() 宏：
+```js
+<!-- Child.vue -->
+<script setup>
+const model = defineModel()
+
+function update() {
+  model.value++
+}
+</script>
+
+<template>
+  <div>父组件的 v-model 值为: {{ model }}</div>
+  <button @click="update">Increment</button>
+</template>
+```
+父组件使用 v-model 绑定一个值：
+```js
+<!-- Parent.vue -->
+<Child v-model="countModel" />
+```
+defineModel 是一个便利宏，其返回的值是一个 ref 。它可以像其他 ref 一样被访问以及修改，不过它能起到在父组件和当前变量之间的双向绑定的作用：
+- 它的 .value 和父组件的 v-model 的值同步
+- 当它被子组件变更了，会触发父组件绑定的值一起更新。 根据 defineModel 的特性，我们可以用 v-model 把这个 ref 绑定到一个原生 input 元素上：
+```js
+<script setup>
+const model = defineModel()
+</script>
+
+<template>
+  <input v-model="model" />
+</template>
+```
+:::
+
+### 如何统一监听 Vue 组件报错
+在 Vue 3 中，可以通过 全局错误处理器 （errorHandler） 和 生命周期钩子（例如 onErrorCaptured ）来统一监听和处理组件中的错误。
+- 通过全局错误处理器 app.config.errorHandler
+```js
+import { createApp } from 'vue';
+const app = createApp(App);
+// 设置全局错误处理器
+app.config.errorHandler = (err, instance, info) => {
+  console.error('捕获到组件错误: ', err);
+  console.log('发生错误的组件实例: ', instance);
+  console.log('错误信息: ', info);
+};
+
+app.mount('#app');
+```
+- 局部错误捕获（onErrorCaptured）
+onErrorCaptured 钩子可以捕获后代组件传递过程中的错误信息
+```js
+<script setup>
+import { onErrorCaptured } from 'vue'
+
+onErrorCaptured((err, instance, info) => {
+  console.error('局部捕获到错误: ', err)
+  console.log('错误来源组件: ', instance)
+  console.log('错误信息: ', info)
+
+  // 这个钩子可以通过返回 false 来阻止错误继续向上传递。
+  return false // 如果需要让错误冒泡到全局，省略或返回 true
+})
+</script>
+
+<template>
+  <div>
+    <h2>局部错误捕获示例</h2>
+    <ErrorProneComponent />
+  </div>
+</template>
+```
+
+## Vuex 中 mutation 和 action 有什么区别？
+在 Vuex 中， mutation 和 action 是用于管理状态的两种核心概念。
+mutation 可以直接修改 store 中的 state值，它只支持同步操作。 Action 不能直接修改 state，而是通过调用 mutation 来间接修改，它用于处理异步操作
+```js
+const store = createStore({
+  state: {
+    count: 0, // 定义状态
+  },
+  mutations: {
+    // Mutation 示例（同步）
+    increment(state, payload) {
+      state.count += payload
+    },
+  },
+})
+
+// 组件中调用
+this.$store.commit('increment', 5)
+```
+
+## Vuex 和 Pinia 有什么区别？
+Pinia 和 Vuex 都是 Vue 的专属状态管理库，允许用户跨组件或页面共享状态。
+![alt text](image.png)
+
+:::details vuex
+```js
+// store.js
+import { createStore } from 'vuex'
+
+const store = createStore({
+  state: {
+    count: 0,
+  },
+  mutations: {
+    increment(state) {
+      state.count++
+    },
+  },
+  actions: {
+    asyncIncrement({ commit }) {
+      setTimeout(() => {
+        commit('increment')
+      }, 1000)
+    },
+  },
+  getters: {
+    doubleCount: (state) => state.count * 2,
+  },
+})
+
+export default store
+```
+组件中使用
+```js
+<script>
+export default {
+  // 计算属性
+  computed: {
+    count() {
+      return this.$store.state.count
+    },
+    doubleCount() {
+      return this.$store.getters.doubleCount
+    },
+  },
+  methods: {
+    // 同步增加
+    increment() {
+      this.$store.commit('increment')
+    },
+    // 异步增加
+    asyncIncrement() {
+      this.$store.dispatch('asyncIncrement')
+    },
+  },
+}
+</script>
+```
+:::
+
+:::details pinia
+```js
+// store.js
+import { defineStore } from 'pinia'
+
+export const useCounterStore = defineStore('counter', {
+  state: () => ({
+    count: 0,
+  }),
+  actions: {
+    increment() {
+      this.count++
+    },
+    async asyncIncrement() {
+      setTimeout(() => {
+        this.increment()
+      }, 1000)
+    },
+  },
+  getters: {
+    doubleCount: (state) => state.count * 2,
+  },
+})
+```
+组件中使用：
+```js
+<script setup>
+import { useCounterStore } from './store'
+const counter = useCounterStore()
+</script>
+
+<template>
+  <h1>Count的计算值 {{ counter.count }}</h1>
+  <h2>Double的计算值 {{ counter.doubleCount }}</h2>
+  <button @click="counter.increment">同步增加</button>
+  <button @click="counter.asyncIncrement">异步增加</button>
+</template>
+```
+:::
+对于vue3项目，官方推荐使用pinia。因为它更轻量、TypeScript 支持更好、模块化更简单且拥有更强的 DevTools 支持。
+
+## Vue-router 导航守卫能用来做什么？
+vue Router 的导航守卫用于在路由跳转过程中对导航行为进行拦截和控制。这些守卫在路由进入、离开或更新时执行，可以用于多种场景，确保应用的导航逻辑符合预期。以下是常见的用途：
+- 认证和授权
+```js
+用于检查用户的登录状态或权限，防止未授权用户访问受限页面:
+router.beforeEach((to, from, next) => {
+  const isAuthenticated = !!localStorage.getItem('token')
+  if (to.meta.requiresAuth && !isAuthenticated) {
+    next('/login') // 未登录，跳转到登录页
+  } else {
+    next() // 已登录，正常导航
+  }
+})
+```
+- 数据预加载
+```js
+在进入路由前预加载必要的数据，确保页面渲染时数据已准备好:
+router.beforeEach(async (to, from, next) => {
+  if (to.name === 'userInfo') {
+    await store.dispatch('fetchUserData') // 预加载用户数据
+  }
+  next()
+})
+```
+- 动态修改页面标题
+```js
+根据路由信息动态更改浏览器标签页的标题，提升用户体验。
+router.afterEach((to) => {
+  document.title = to.meta.title || '自定义标题'
+})
+```
+- 动画和加载效果
+```js
+在路由切换时展示加载动画或过渡效果，提升用户体验。
+router.beforeEach((to, from, next) => {
+  store.commit('setLoading', true) // 开始加载动画
+  next()
+})
+
+router.afterEach(() => {
+  store.commit('setLoading', false) // 结束加载动画
+})
+```
+
+- 日志记录和分析
+```js
+在路由切换时记录用户行为，用于分析或调试。
+router.afterEach((to, from) => {
+  console.log(`用户从 ${from.fullPath} 跳转到 ${to.fullPath}`)
+})
+```
+- 防止访问不存在的页面
+```js
+通过守卫检查路由是否存在，避免导航到无效页面。
+router.beforeEach((to, from, next) => {
+  const routeExists = router.getRoutes().some((route) => route.name === to.name)
+  if (!routeExists) {
+    next('/404') // 跳转到 404 页面
+  } else {
+    next()
+  }
+})
+```
